@@ -37,4 +37,6 @@ out/
 .vscode/
 
 
+### Custome ###
 .mp3
+resources/logs/
