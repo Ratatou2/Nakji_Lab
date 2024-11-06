@@ -13,8 +13,12 @@ output_dir = os.path.join('src\\main\\resources\\mp3file')
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 
-# 로그 설정
-logging.basicConfig(filename=os.path.join(log_dir, 'youtubeDownload.log'), level=logging.INFO)
+# 로그 설정 (UTF-8 없으면 한글 깨짐)
+logging.basicConfig(
+    filename=os.path.join(log_dir, 'youtube_download.log'),
+    level=logging.INFO,
+    encoding='utf-8'  # UTF-8 인코딩 설정
+)
 
 def download_audio(url, ffmpeg_path, singer, songName):
     fileName = f"{singer}-{songName}"
@@ -30,14 +34,14 @@ def download_audio(url, ffmpeg_path, singer, songName):
         'ffmpeg_location': ffmpeg_path  # FFmpeg 경로를 직접 사용
     }
 
-    logging.info(f'Starting download for: {url}')
+    logging.info(f'[SYSTEM] download for: [info][{singer}-{songName}][{url}]')
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([url])
-            logging.info(f'Completed download for: {url}')
+            logging.info(f'[Complete][{singer}-{songName}]')
     except Exception as e:
-        logging.error(f"An error occurred: {e}")
-        print(f"An error occurred: {e}")
+        logging.error(f"[Error][yt_dlp Fail][{e}]")
+        print(f"[Error][yt_dlp Fail]: {e}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='YouTube에서 오디오 다운로드.')
