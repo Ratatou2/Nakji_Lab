@@ -50,6 +50,10 @@ public class YoutubeService {
             String downloadScript = String.valueOf(Paths.get(externalResourcePath, "scripts/youtubeDownload.py"));
             String ffmpegPath = String.valueOf(Paths.get(externalResourcePath, "ffmpeg/ffmpeg.exe"));
             String mp3Path = String.valueOf(Paths.get(externalResourcePath, "mp3file"));
+            String mp3PathTemp = String.valueOf(Paths.get(externalResourcePath + "/mp3file"));
+
+            System.out.println("mp3Path 경로 : " + mp3Path);
+            System.out.println("mp3PathTemp 경로 : " + mp3Path);
 
             // ProcessBuilder 생성 (쉘이나 CMD로 실행 가능)
             processBuilder = new ProcessBuilder("python", downloadScript, url, "--ffmpeg-location", ffmpegPath, singer, songName, mp3Path);
