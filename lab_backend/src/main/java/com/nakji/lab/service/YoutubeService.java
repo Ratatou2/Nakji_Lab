@@ -14,7 +14,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 
-
 @Service
 public class YoutubeService {
     @Value("${custom.resource.path}")
@@ -23,6 +22,8 @@ public class YoutubeService {
     public boolean isLinux() {
         // 운영체제 정보 가져오기
         String os = System.getProperty("os.name").toLowerCase();
+
+        System.out.println("현재 OS : " + os);
 
         // OS에 따라 다른 메시지 출력
         if (os.contains("nix") || os.contains("nux") || os.contains("mac")) {
