@@ -60,14 +60,20 @@ public class YoutubeService {
                     + "URL : " + url);
 
             // 리눅스 환경이면 경로 변경하자
-            if (isLinux()) {
+            boolean isLinux = isLinux();
+            if (isLinux) {
                 externalResourcePath = "/app/resources-external";
             }
 
             // Python 스크립트 및 ffmpeg 경로
             String downloadScript = Paths.get(externalResourcePath, "scripts/youtubeDownload.py").toString();
-            String ffmpegPath = Paths.get(externalResourcePath, "ffmpeg").toString();  // Linux에서는 .exe가 아닌 ffmpeg 통째로 실행됨
+
+            String ffmpegPath = isLinux ? "ffmpeg_linux" : "ffmpeg/ffmpeg.exe";
+
+            System.out.println("운영 환경에 따른 ffmpeg 경로 : " + ffmpegPath);
+            ffmpegPath = Paths.get(externalResourcePath, ffmpegPath).toString();  // Linux에서는 .exe가 아닌 ffmpeg 통째로 실행됨
 //            String ffmpegPath = Paths.get(externalResourcePath, "ffmpeg/ffmpeg.exe").toString();
+
             String mp3Path = Paths.get(externalResourcePath, "mp3file").toString();
             String mp3PathTemp = Paths.get(externalResourcePath + "/mp3file").toString();
 
