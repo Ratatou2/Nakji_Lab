@@ -22,7 +22,7 @@ import argparse
 
 def download_audio(url, ffmpeg_path, singer, songName, mp3_dir):
     fileName = f"{singer}-{songName}"
-
+    print("ffmpeg_path 경로 " + ffmpeg_path)
     ydl_opts = {
         'format': 'bestaudio/best',
         'outtmpl': os.path.join(mp3_dir, fileName + '.%(ext)s'),  # mp3file 디렉토리에 저장
