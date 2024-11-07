@@ -2,3 +2,4 @@ beautifulsoup4
 lxml
 requests
 mutagen
+yt_dlp
