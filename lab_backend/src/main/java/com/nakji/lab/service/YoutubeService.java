@@ -20,6 +20,18 @@ public class YoutubeService {
     @Value("${custom.resource.path}")
     private String externalResourcePath;
 
+    public boolean isLinux() {
+        // 운영체제 정보 가져오기
+        String os = System.getProperty("os.name").toLowerCase();
+
+        // OS에 따라 다른 메시지 출력
+        if (os.contains("nix") || os.contains("nux") || os.contains("mac")) {
+            return false;
+        } else {
+            return false;
+        }
+    }
+
     public YoutubeDownloadResponse youtubeDownload(YoutubeDownloadRequest youtubeDownloadRequest) {
         try {
             // 결과
@@ -45,6 +57,11 @@ public class YoutubeService {
                     + "Singer : " + singer + "\n"
                     + "Song Name : " + songName + "\n"
                     + "URL : " + url);
+
+            // 리눅스 환경이면 경로 변경하자
+            if (isLinux()) {
+                externalResourcePath = "/app/resources-external";
+            }
 
             // Python 스크립트 및 ffmpeg 경로
             String downloadScript = Paths.get(externalResourcePath, "scripts/youtubeDownload.py").toString();
