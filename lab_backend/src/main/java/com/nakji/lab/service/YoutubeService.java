@@ -61,18 +61,16 @@ public class YoutubeService {
 
             // 리눅스 환경이면 경로 변경하자
             boolean isLinux = isLinux();
+            String downloadScriptDir = "scripts/youtubeDownload.py";
+
             if (isLinux) {
                 externalResourcePath = "/app/resources-external";
+                downloadScriptDir = "scripts/youtubeDownload_linux.py";
             }
 
             // Python 스크립트 및 ffmpeg 경로
-            String downloadScript = Paths.get(externalResourcePath, "scripts/youtubeDownload.py").toString();
-
-            String ffmpegPath = isLinux ? "ffmpeg_linux" : "ffmpeg/ffmpeg.exe";
-
-            System.out.println("운영 환경에 따른 ffmpeg 경로 : " + ffmpegPath);
-            ffmpegPath = Paths.get(externalResourcePath, ffmpegPath).toString();  // Linux에서는 .exe가 아닌 ffmpeg 통째로 실행됨
-//            String ffmpegPath = Paths.get(externalResourcePath, "ffmpeg/ffmpeg.exe").toString();
+            String downloadScript = Paths.get(externalResourcePath, downloadScriptDir).toString();
+            String ffmpegPath = Paths.get(externalResourcePath, "ffmpeg/ffmpeg.exe").toString();
 
             String mp3Path = Paths.get(externalResourcePath, "mp3file").toString();
             String mp3PathTemp = Paths.get(externalResourcePath + "/mp3file").toString();
@@ -80,8 +78,8 @@ public class YoutubeService {
             System.out.println("mp3Path 경로 : " + mp3Path);
             System.out.println("mp3PathTemp 경로 : " + mp3PathTemp);
 
-            // ProcessBuilder 생성 (쉘이나 CMD로 실행 가능)
-            processBuilder = new ProcessBuilder("python", downloadScript, url, "--ffmpeg-location", ffmpegPath, singer, songName, mp3Path);
+            processBuilder = isLinux ? new ProcessBuilder("python", downloadScript, url, "--ffmpeg-location", ffmpegPath, singer, songName, mp3Path)
+                                        : new ProcessBuilder("python", downloadScript, url, singer, songName, mp3Path);
             processBuilder.redirectErrorStream(true);
             processBuilder.environment().put("PYTHONIOENCODING", "utf-8"); // 환경 변수로 UTF-8 인코딩 설정
 
