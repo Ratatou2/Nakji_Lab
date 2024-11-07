@@ -34,21 +34,21 @@ public class YoutubeController {
             YoutubeDownloadResponse youtubeDownloadResponse = youtubeService.youtubeDownload(youtubeDownloadRequest);
 
             if (!youtubeDownloadResponse.isSuccess()) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("[SYSTEM] Error executing script:\n" + youtubeDownloadResponse.getMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("[Error][YoutubeController][downloadMp3File][DownloadSong] \n" + youtubeDownloadResponse.getMessage());
             }
 
             // 노래 Info 업데이트
             UpdateSongInfoResponse updateSongInfoResponse = youtubeService.updateSongInfo();
 
             if (!updateSongInfoResponse.isSuccess()) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("[SYSTEM] Error executing script:\n" + youtubeDownloadResponse.getMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("[Error][YoutubeController][downloadMp3File][UpdateSong] \n" + updateSongInfoResponse.getMessage());
             }
 
             return ResponseEntity.ok("[SUCCESS] Download and update completed successfully.");
         } catch (Exception e) {
-            System.err.println("[SYSTEM] Exception during script execution: " + e.getMessage());
+            System.err.println("[Error][YoutubeController][downloadMp3File] " + e.getMessage());
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("[SYSTEM] Error executing script:\n" + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("[Error][YoutubeController][downloadMp3File]:\n" + e.getMessage());
         }
     }
 }

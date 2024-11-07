@@ -4,14 +4,22 @@ import com.nakji.lab.dto.request.YoutubeDownloadRequest;
 import com.nakji.lab.dto.response.UpdateSongInfoResponse;
 import com.nakji.lab.dto.response.YoutubeDownloadResponse;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+
 
 @Service
 public class YoutubeService {
+    @Value("${custom.resource.path}")
+    private String externalResourcePath;
+
     public YoutubeDownloadResponse youtubeDownload(YoutubeDownloadRequest youtubeDownloadRequest) {
         try {
             // 결과
@@ -39,11 +47,12 @@ public class YoutubeService {
                     + "URL : " + url);
 
             // Python 스크립트 및 ffmpeg 경로
-            String downloadScript = new File("src/main/resources/scripts/youtubeDownload.py").getAbsolutePath();
-            String ffmpegPath = new File("src/main/resources/ffmpeg/ffmpeg.exe").getAbsolutePath();
+            String downloadScript = String.valueOf(Paths.get(externalResourcePath, "scripts/youtubeDownload.py"));
+            String ffmpegPath = String.valueOf(Paths.get(externalResourcePath, "ffmpeg/ffmpeg.exe"));
+            String mp3Path = String.valueOf(Paths.get(externalResourcePath, "mp3file"));
 
             // ProcessBuilder 생성 (쉘이나 CMD로 실행 가능)
-            processBuilder = new ProcessBuilder("python", downloadScript, url, "--ffmpeg-location", ffmpegPath, singer, songName);
+            processBuilder = new ProcessBuilder("python", downloadScript, url, "--ffmpeg-location", ffmpegPath, singer, songName, mp3Path);
             processBuilder.redirectErrorStream(true);
             processBuilder.environment().put("PYTHONIOENCODING", "utf-8"); // 환경 변수로 UTF-8 인코딩 설정
 
@@ -94,8 +103,11 @@ public class YoutubeService {
             Process process;
 
             // 앨범 info 업데이트 part
-            String updateScript = new File("src/main/resources/scripts/UpdateEveryMp3FileTag.py").getAbsolutePath();
-            processBuilder = new ProcessBuilder("python", updateScript);
+            String updateScript = String.valueOf(Paths.get(externalResourcePath, "scripts/UpdateEveryMp3FileTag.py"));
+            String mp3Path = String.valueOf(Paths.get(externalResourcePath + "/mp3file"));
+
+            System.out.println(mp3Path);
+            processBuilder = new ProcessBuilder("python", updateScript, "--mp3path", mp3Path);
 
             process = processBuilder.start();
 

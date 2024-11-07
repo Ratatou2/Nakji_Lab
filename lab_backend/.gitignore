@@ -38,7 +38,10 @@ out/
 
 
 ### Custome ###
-.mp3
-resources/logs/
-youtubeDownload.txt
 .log
+.mp3
+youtubeDownload.txt
+**/src/**/resources/logs/
+**/src/**/resources/mp3file/
+/resources-external/logs/
+/resources-external/mp3file/
