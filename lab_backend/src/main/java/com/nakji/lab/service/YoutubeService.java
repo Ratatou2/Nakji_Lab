@@ -27,7 +27,7 @@ public class YoutubeService {
 
         // OS에 따라 다른 메시지 출력
         if (os.contains("nix") || os.contains("nux") || os.contains("mac")) {
-            return false;
+            return true;
         } else {
             return false;
         }
