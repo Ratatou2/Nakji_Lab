@@ -78,8 +78,8 @@ public class YoutubeService {
             System.out.println("mp3Path 경로 : " + mp3Path);
             System.out.println("mp3PathTemp 경로 : " + mp3PathTemp);
 
-            processBuilder = isLinux ? new ProcessBuilder("python", downloadScript, url, "--ffmpeg-location", ffmpegPath, singer, songName, mp3Path)
-                                        : new ProcessBuilder("python", downloadScript, url, singer, songName, mp3Path);
+            processBuilder = isLinux ? new ProcessBuilder("python", downloadScript, url, singer, songName, mp3Path)
+                                        : new ProcessBuilder("python", downloadScript, url, "--ffmpeg-location", ffmpegPath, singer, songName, mp3Path);
             processBuilder.redirectErrorStream(true);
             processBuilder.environment().put("PYTHONIOENCODING", "utf-8"); // 환경 변수로 UTF-8 인코딩 설정
 
