@@ -106,7 +106,7 @@ public class YoutubeService {
             String updateScript = String.valueOf(Paths.get(externalResourcePath, "scripts/UpdateEveryMp3FileTag.py"));
             String mp3Path = String.valueOf(Paths.get(externalResourcePath + "/mp3file"));
 
-            System.out.println(mp3Path);
+            System.out.println("경로 : " + mp3Path);
             processBuilder = new ProcessBuilder("python", updateScript, "--mp3path", mp3Path);
 
             process = processBuilder.start();
