@@ -6,7 +6,6 @@ import com.nakji.lab.dto.response.UpdateSongInfoResponse;
 import com.nakji.lab.dto.response.YoutubeDownloadResponse;
 
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -28,7 +27,7 @@ public class YoutubeService {
         String osName = System.getProperty("os.name").toLowerCase();  // 운영체제 정보 가져오기
         return (osName.contains("nix") || osName.contains("nux") || osName.contains("mac"));
     }
-    
+
     /**
      * OS 체크하여, OS에 맞는 externalResourcePath 설정
      * */
