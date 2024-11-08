@@ -4,8 +4,8 @@ import lombok.Getter;
 
 @Getter
 public class CommonResponse {
-    private boolean isSuccess;
-    private String message;
+    private final boolean isSuccess;
+    private final String message;
 
     // 파라미터를 받는 생성자 추가
     public CommonResponse(boolean isSuccess, String message) {

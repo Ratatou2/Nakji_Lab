@@ -8,8 +8,13 @@ public class YoutubeDownloadResponse extends CommonResponse {
         super(false, "");  // 기본 값 설정
     }
 
+
     // 파라미터를 받는 생성자
     public YoutubeDownloadResponse(boolean isSuccess, String message) {
         super(isSuccess, message);
+    }
+
+    public YoutubeDownloadResponse(CommonResponse commonResponse) {
+        super(commonResponse.isSuccess(), commonResponse.getMessage());
     }
 }

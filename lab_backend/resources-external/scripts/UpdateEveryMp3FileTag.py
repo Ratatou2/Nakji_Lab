@@ -20,6 +20,9 @@ import argparse
 #     encoding='utf-8'  # UTF-8 인코딩 설정
 # )
 
+global_final_song_name = ""
+global_final_singer_name = ""
+
 # 콘솔 출력 인코딩 설정 (UTF-8)
 if sys.stdout.encoding != 'UTF-8':
     import io
@@ -87,6 +90,11 @@ def edit_mp3_file(query, file_link):
         audio["USLT"] = USLT(encoding=3, lang=u'kor', desc=u'', text=lyrics)  # 가사
 
         audio.save(mp3_file)
+
+        global global_final_singer_name, global_final_song_name
+        global_final_singer_name = artist[0].text.strip()
+        global_final_song_name = song[0].text.strip()
+
 #         logging.info(f'[Complete] {mp3_file} Complete!')
         print('[Success][mp3 파일 저장 성공][' + mp3_file + ']')
     except Exception as e:
@@ -141,7 +149,7 @@ if __name__ == "__main__":
             song = file_name[start + 1:end]  # 노래 제목
 
             # 파일명을 {SingerName} - {SongName} 형식으로 변경
-            new_file_path = rename_mp3_file(file_path, artist, song)
+            new_file_path = rename_mp3_file(file_path, global_final_singer_name, global_final_song_name)
 
 
 
