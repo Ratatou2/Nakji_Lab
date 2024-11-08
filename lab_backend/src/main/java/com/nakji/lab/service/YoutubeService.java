@@ -34,6 +34,8 @@ public class YoutubeService {
             externalResourcePath = "/app/resources-external";  // 리눅스 환경에 맞게 스크립트 파일 경로 변경
         }
 
+        System.out.println("[최초 리눅스 체크] " + externalResourcePath);
+
         return result;
     }
 
@@ -92,6 +94,10 @@ public class YoutubeService {
 
             // 리눅스 환경 여부에 따라 스크립트 세팅 (리눅스 환경이면 ffmpeg 경로 세팅이 필요없음)
             String downloadScriptDir = isLinux ? "scripts/youtubeDownload_linux.py" : "scripts/youtubeDownload.py";
+
+            System.out.println("before" + externalResourcePath);
+            externalResourcePath = isLinux ? "/app/resources-external" : externalResourcePath;
+            System.out.println("after" + externalResourcePath);
 
             // Python 스크립트 및 ffmpeg 경로
             String downloadScript = String.valueOf(Paths.get(externalResourcePath, downloadScriptDir));
