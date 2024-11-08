@@ -5,6 +5,7 @@ import com.nakji.lab.dto.request.YoutubeDownloadRequest;
 import com.nakji.lab.dto.response.UpdateSongInfoResponse;
 import com.nakji.lab.dto.response.YoutubeDownloadResponse;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +18,6 @@ import java.nio.file.Paths;
 public class YoutubeService {
     private final String DEFAULT_LOG_EXCEPTION = "[EXCEPTION][YoutubeService]";  // YoutubeService Default 로그명
     private final boolean isLinux = isLinux();  // 중간에 사용환경이 변할리는 없으니까 인스턴스 생성할 때 고정한다
-
-    @Value("${custom.resource.path}")
     private String externalResourcePath;
 
     /**
@@ -27,16 +26,16 @@ public class YoutubeService {
      */
     public boolean isLinux() {
         String osName = System.getProperty("os.name").toLowerCase();  // 운영체제 정보 가져오기
-        boolean result = false;
-
-        if (osName.contains("nix") || osName.contains("nux") || osName.contains("mac")) {
-            result = true;
-            externalResourcePath = "/app/resources-external";  // 리눅스 환경에 맞게 스크립트 파일 경로 변경
-        }
-
-        System.out.println("[최초 리눅스 체크] " + externalResourcePath);
-
-        return result;
+        return (osName.contains("nix") || osName.contains("nux") || osName.contains("mac"));
+    }
+    
+    /**
+     * OS 체크하여, OS에 맞는 externalResourcePath 설정
+     * */
+    @PostConstruct
+    public void initExternalResourcePath() {
+        externalResourcePath = isLinux ? "/app/resources-external" : "./resources-external";
+        System.out.println("[SYSTEM][최초 리눅스 체크] " + externalResourcePath);
     }
 
     /**
@@ -67,11 +66,13 @@ public class YoutubeService {
             int exitCode = process.waitFor();  // 프로세스 종료 코드 확인
             if (exitCode == 0) {
                 isSuccess = true;
-                message = "[PROCESS SUCCESS][" + executeFunctionName + "] " + output;
+                message = "[PROCESS SUCCESS][";
             } else {
                 isSuccess = false;
-                message = "[PROCESS FAIL][" + executeFunctionName + "] " + output;
+                message = "[PROCESS FAIL][";
             }
+
+            message += executeFunctionName + "] " + output;
 
             return new CommonResponse(isSuccess, message);
         } catch (Exception e) {
@@ -94,10 +95,6 @@ public class YoutubeService {
 
             // 리눅스 환경 여부에 따라 스크립트 세팅 (리눅스 환경이면 ffmpeg 경로 세팅이 필요없음)
             String downloadScriptDir = isLinux ? "scripts/youtubeDownload_linux.py" : "scripts/youtubeDownload.py";
-
-            System.out.println("before" + externalResourcePath);
-            externalResourcePath = isLinux ? "/app/resources-external" : externalResourcePath;
-            System.out.println("after" + externalResourcePath);
 
             // Python 스크립트 및 ffmpeg 경로
             String downloadScript = String.valueOf(Paths.get(externalResourcePath, downloadScriptDir));
