@@ -6,24 +6,28 @@
     <h1>Nakji World</h1>
   </div>
   <div>
-    <img class="mangom-logo" src="./assets/img/mangom_ggozil.png">
+    <img class="mangom-logo" src="./assets/img/mangom_ggozil.png" />
   </div>
   <div class="main">
-    <img class="mangom-cute" src="./assets/img/mangom_typing.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <img class="mangom-cute" src="./assets/img/mangom_typing.png" />
+    <YoutubeDownlaod></YoutubeDownlaod>
   </div>
-  
+  <div>
+    <HelloWorld msg="Welcome to Your Vue.js App" />
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import HelloWorld from "./components/HelloWorld.vue";
+import YoutubeDownlaod from "./components/YoutubeDownlaod.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
-  }
-}
+    HelloWorld,
+    YoutubeDownlaod,
+  },
+};
 </script>
 
 <style>
@@ -44,7 +48,7 @@ export default {
 .mangom-cute {
   width: 40%;
   height: 40%;
-  margin: 0 30px 0 0 ;
+  margin: 0 30px 0 0;
 }
 
 .Vue-logo {
@@ -53,9 +57,9 @@ export default {
 }
 
 .main {
-  display: flex;          /* Flexbox layout을 사용 */
-  flex-direction: row;    /* 요소들을 가로 방향으로 정렬 */
-  align-items: center;    /* 세로 방향 가운데 정렬 */
+  display: flex; /* Flexbox layout을 사용 */
+  flex-direction: row; /* 요소들을 가로 방향으로 정렬 */
+  align-items: center; /* 세로 방향 가운데 정렬 */
   justify-content: center; /* 가로 방향 가운데 정렬 */
 }
 </style>
