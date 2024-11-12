@@ -5,14 +5,13 @@ import com.nakji.lab.dto.response.UpdateSongInfoResponse;
 import com.nakji.lab.dto.response.YoutubeDownloadResponse;
 import com.nakji.lab.service.YoutubeService;
 
+import com.nakji.lab.utill.YoutubeUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 
 @RestController
@@ -23,12 +22,32 @@ public class YoutubeController {
     private final String DEFAULT_LOG_SYSTEM_FAIL = "[SYSTEM][FAIL] ";
 
     private final YoutubeService youtubeService;
+    private final YoutubeUtil youtubeUtil;
 
     @PostMapping("/download")
-    public ResponseEntity<String> downloadAndUpdateMp3File(@RequestParam String url, @RequestParam String singer, @RequestParam String songName) {
+    public ResponseEntity<String> downloadAndUpdateMp3File(@RequestBody YoutubeDownloadRequest youtubeDownloadRequest) {
         try {
+            System.out.println("[SYSTEM][downloadAndUpdateMp3File][USER_INPUT] "
+                    + youtubeDownloadRequest.getUrl() + " / "
+                    + youtubeDownloadRequest.getArtist() + " / "
+                    + youtubeDownloadRequest.getSongTitle());
+
+            // url의 유효성 검사
+            if (youtubeUtil.isValidUrl(youtubeDownloadRequest.getUrl())) {
+                throw new IllegalArgumentException("Wrong URL.");
+            }
+
+            // 100자가 넘는 artist 이름 예외처리
+            if (100 < youtubeDownloadRequest.getArtist().length()) {
+                throw new IllegalArgumentException("Artist name is too long.");
+            }
+
+            // 혹시 모를 null 값 체크
+            if (youtubeDownloadRequest.getUrl() == null || youtubeDownloadRequest.getUrl().isEmpty()) {
+                throw new IllegalArgumentException("URL is required.");
+            }
+
             // 노래 다운로드
-            YoutubeDownloadRequest youtubeDownloadRequest = new YoutubeDownloadRequest(url, singer, songName);
             YoutubeDownloadResponse youtubeDownloadResponse = youtubeService.youtubeDownload(youtubeDownloadRequest);
 
             if (!youtubeDownloadResponse.isSuccess()) {
