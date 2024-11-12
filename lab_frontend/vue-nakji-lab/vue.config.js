@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const { defineConfig } = require("@vue/cli-service");
 
 module.exports = defineConfig({
@@ -16,3 +17,9 @@ module.exports = defineConfig({
     },
   },
 });
+=======
+const { defineConfig } = require('@vue/cli-service')
+module.exports = defineConfig({
+  transpileDependencies: true
+})
+>>>>>>> f3cf5f98e8279c01e5fe4da26ffc4e2e9e2b6376
