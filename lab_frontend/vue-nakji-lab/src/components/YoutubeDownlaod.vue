@@ -21,8 +21,11 @@ export default {
   methods: {
     async downloadYoutube() {
       try {
+        // 여기서 백엔드 URL을 프로시로 설정된 URL로 호출
         const response = await fetch(
-          "http://localhost:8080/api/youtube/download",
+          `${
+            process.env.VUE_APP_BACKEND_URL || "http://localhost:8080"
+          }/api/youtube/download`,
           {
             method: "POST",
             headers: {
@@ -31,7 +34,7 @@ export default {
             body: JSON.stringify({
               artist: this.artist,
               songTitle: this.songTitle,
-              url: this.url, // 여기에 추가
+              url: this.url,
             }),
           }
         );
