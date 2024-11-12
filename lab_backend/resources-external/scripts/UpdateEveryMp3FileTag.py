@@ -20,8 +20,8 @@ import argparse
 #     encoding='utf-8'  # UTF-8 인코딩 설정
 # )
 
-global_final_song_name = ""
-global_final_singer_name = ""
+global_final_artist_name = ""
+global_final_song_title = ""
 
 # 콘솔 출력 인코딩 설정 (UTF-8)
 if sys.stdout.encoding != 'UTF-8':
@@ -91,9 +91,9 @@ def edit_mp3_file(query, file_link):
 
         audio.save(mp3_file)
 
-        global global_final_singer_name, global_final_song_name
-        global_final_singer_name = artist[0].text.strip()
-        global_final_song_name = song[0].text.strip()
+        global global_final_artist_name, global_final_song_title
+        global_final_artist_name = artist[0].text.strip()
+        global_final_song_title = song[0].text.strip()
 
 #         logging.info(f'[Complete] {mp3_file} Complete!')
         print('[Success][mp3 파일 저장 성공][' + mp3_file + ']')
@@ -102,9 +102,9 @@ def edit_mp3_file(query, file_link):
         print("[Error][mp3 파일 저장 실패][" + mp3_file + '] : ', e)
 
 
-def rename_mp3_file(file_path, artist, song):
-    # 파일명 수정: {SingerName} - {SongName} 형식으로 변경
-    new_file_name = f"{artist.strip()} - {song.strip()}.mp3"
+def rename_mp3_file(file_path, artist, songTitle):
+    # 파일명 수정: {artist} - {songTitle} 형식으로 변경
+    new_file_name = f"{artist.strip()} - {songTitle.strip()}.mp3"
     new_file_path = os.path.join(os.path.dirname(file_path), new_file_name)
 
     # 파일이 이미 존재하는지 확인
@@ -148,8 +148,8 @@ if __name__ == "__main__":
             artist = file_name[:start]  # 아티스트 이름
             song = file_name[start + 1:end]  # 노래 제목
 
-            # 파일명을 {SingerName} - {SongName} 형식으로 변경
-            new_file_path = rename_mp3_file(file_path, global_final_singer_name, global_final_song_name)
+            # 파일명을 {artist} - {songTitle} 형식으로 변경
+            new_file_path = rename_mp3_file(file_path, global_final_artist_name, global_final_song_title)
 
 
 

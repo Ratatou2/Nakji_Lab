@@ -92,9 +92,9 @@ def edit_mp3_file(query, file_link):
         print("[Error] mp3 파일 저장 실패 [" + mp3_file + '] : ', e)
 
 
-def rename_mp3_file(file_path, artist, song):
-    # 파일명 수정: {SingerName} - {SongName} 형식으로 변경
-    new_file_name = f"{artist.strip()} - {song.strip()}.mp3"
+def rename_mp3_file(file_path, artist, songTitle):
+    # 파일명 수정: {artist} - {songTitle} 형식으로 변경
+    new_file_name = f"{artist.strip()} - {songTitle.strip()}.mp3"
     new_file_path = os.path.join(os.path.dirname(file_path), new_file_name)
     os.rename(file_path, new_file_path)
     print(f"[Renamed] {file_path} -> {new_file_path}")
@@ -137,10 +137,10 @@ if __name__ == "__main__":
                 edit_mp3_file(query, file_path)
 
                 artist = file_name[:start]  # 아티스트 이름
-                song = file_name[start + 1:end]  # 노래 제목
+                songTitle = file_name[start + 1:end]  # 노래 제목
 
-                # 파일명을 {SingerName} - {SongName} 형식으로 변경
-                new_file_path = rename_mp3_file(file_path, artist, song)
+                # 파일명을 {artist} - {songTitle} 형식으로 변경
+                new_file_path = rename_mp3_file(file_path, artist, songTitle)
 
 
 

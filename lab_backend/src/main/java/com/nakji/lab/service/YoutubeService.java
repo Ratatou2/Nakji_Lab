@@ -5,7 +5,9 @@ import com.nakji.lab.dto.request.YoutubeDownloadRequest;
 import com.nakji.lab.dto.response.UpdateSongInfoResponse;
 import com.nakji.lab.dto.response.YoutubeDownloadResponse;
 
+import com.nakji.lab.utill.CommonUtil;
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -14,19 +16,11 @@ import java.nio.file.Paths;
 
 
 @Service
+@RequiredArgsConstructor
 public class YoutubeService {
     private final String DEFAULT_LOG_EXCEPTION = "[EXCEPTION][YoutubeService]";  // YoutubeService Default 로그명
-    private final boolean isLinux = isLinux();  // 중간에 사용환경이 변할리는 없으니까 인스턴스 생성할 때 고정한다
+    private final boolean isLinux = CommonUtil.isLinux();  // 중간에 사용환경이 변할리는 없으니까 인스턴스 생성할 때 고정한다
     private String externalResourcePath;
-
-    /**
-     * 현재 운영체제가 리눅스인지 체크
-     * @return - 현 운영체제가 리눅스인지 여부
-     */
-    public boolean isLinux() {
-        String osName = System.getProperty("os.name").toLowerCase();  // 운영체제 정보 가져오기
-        return (osName.contains("nix") || osName.contains("nux") || osName.contains("mac"));
-    }
 
     /**
      * OS 체크하여, OS에 맞는 externalResourcePath 설정
@@ -88,9 +82,9 @@ public class YoutubeService {
     public YoutubeDownloadResponse youtubeDownload(YoutubeDownloadRequest youtubeDownloadRequest) {
         try {
             // input 여백 제거
-            String url = youtubeDownloadRequest.url().trim();
-            String singer = youtubeDownloadRequest.singer().trim();
-            String songName = youtubeDownloadRequest.songName().trim();
+            String url = youtubeDownloadRequest.getUrl().trim();
+            String artist = youtubeDownloadRequest.getArtist().trim();
+            String songTitle = youtubeDownloadRequest.getSongTitle().trim();
 
             // 리눅스 환경 여부에 따라 스크립트 세팅 (리눅스 환경이면 ffmpeg 경로 세팅이 필요없음)
             String downloadScriptDir = isLinux ? "scripts/youtubeDownload_linux.py" : "scripts/youtubeDownload.py";
@@ -101,8 +95,8 @@ public class YoutubeService {
             String mp3Path = String.valueOf(Paths.get(externalResourcePath, "mp3file"));
 
             ProcessBuilder processBuilder = isLinux ?
-                    new ProcessBuilder("python", downloadScript, url, singer, songName, mp3Path) :
-                    new ProcessBuilder("python", downloadScript, url, "--ffmpeg-location", ffmpegPath, singer, songName, mp3Path);
+                    new ProcessBuilder("python", downloadScript, url, artist, songTitle, mp3Path) :
+                    new ProcessBuilder("python", downloadScript, url, "--ffmpeg-location", ffmpegPath, artist, songTitle, mp3Path);
 
             processBuilder.redirectErrorStream(true);  // 오류 메시지와 일반 출력 메시지를 모두 표준 출력 스트림으로 확인할 수 있도록 설정
             processBuilder.environment().put("PYTHONIOENCODING", "utf-8"); // 환경 변수로 UTF-8 인코딩 설정
