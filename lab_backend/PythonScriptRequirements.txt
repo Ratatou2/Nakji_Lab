@@ -3,4 +3,4 @@ lxml
 requests
 mutagen
 yt_dlp
-PIL
+Pillow
