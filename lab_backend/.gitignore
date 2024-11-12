@@ -1,3 +1,10 @@
+HELP.md
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
 ### STS ###
 .apt_generated
 .classpath
@@ -10,7 +17,6 @@ bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 
-
 ### IntelliJ IDEA ###
 .idea
 *.iws
@@ -20,7 +26,6 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
-
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
@@ -28,23 +33,5 @@ out/
 /nbdist/
 /.nb-gradle/
 
-
 ### VS Code ###
 .vscode/
-
-
-### Custome ###
-HELP.md
-.gradle
-build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-.log
-.mp3
-youtubeDownload.txt
-**/src/**/resources/logs/
-**/src/**/resources/mp3file/
-/resources-external/logs/
-/resources-external/mp3file/
