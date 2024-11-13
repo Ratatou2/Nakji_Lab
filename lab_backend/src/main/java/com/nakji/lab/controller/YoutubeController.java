@@ -25,13 +25,9 @@ public class YoutubeController {
     private final YoutubeService youtubeService;
     private final YoutubeUtil youtubeUtil;
 
-    private final WebConfig webConfig;
-
     @PostMapping("/download")
     public ResponseEntity<String> downloadAndUpdateMp3File(@RequestBody YoutubeDownloadRequest youtubeDownloadRequest) {
         try {
-            webConfig.getProperty("server");
-
             System.out.println("[SYSTEM][downloadAndUpdateMp3File][USER_INPUT] "
                     + youtubeDownloadRequest.getUrl() + " / "
                     + youtubeDownloadRequest.getArtist() + " / "
