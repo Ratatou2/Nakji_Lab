@@ -29,7 +29,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedHeaders("*");
 
         registry.addMapping("/api/**")
-                .allowedOrigins(getProperty("server"))
+                .allowedOrigins(getProperty("server"), "http://babywombat.zapto.org", "http://babywombat.zapto.org:10260")
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*");
     }
