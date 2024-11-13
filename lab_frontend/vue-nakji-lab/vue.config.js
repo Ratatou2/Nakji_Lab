@@ -3,7 +3,6 @@ const { defineConfig } = require("@vue/cli-service");
 module.exports = defineConfig({
   publicPath: "",
   transpileDependencies: true,
-  outputDir: "../../lab_backend/src/main/resources/static/", // 빌드된 파일을 static에 저장
   devServer: {
     port: 8081, // Vue 개발 서버 포트
     proxy: {
