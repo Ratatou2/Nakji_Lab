@@ -19,17 +19,12 @@ public class WebConfig implements WebMvcConfigurer {
     }
     public String getProperty(String key){
         String temp = environment.getProperty(key);
-        System.out.println(temp);
+        System.out.println("현재 env  파일 읽어온 내용 : " + temp);
         return temp;
     }
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("http://localhost:8081", "http://babywombat.zapto.org", "http://babywombat.zapto.org:10260")
-                .allowedMethods("*")
-                .allowedHeaders("*");
-
         registry.addMapping("/api/**")
                 .allowedOrigins("http://localhost:8081", "http://babywombat.zapto.org", "http://babywombat.zapto.org:10260")
                 .allowedMethods("*")
