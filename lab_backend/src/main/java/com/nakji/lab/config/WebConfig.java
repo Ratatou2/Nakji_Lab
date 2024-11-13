@@ -24,13 +24,26 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins(getProperty("local1"), getProperty("local2"), getProperty("server"), "http://babywombat.zapto.org", "http://babywombat.zapto.org:10260")
-                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowedOrigins("http://localhost:8081", "http://babywombat.zapto.org", "http://babywombat.zapto.org:10260")
+                .allowedMethods("*")
                 .allowedHeaders("*");
 
         registry.addMapping("/api/**")
-                .allowedOrigins(getProperty("server"), "http://babywombat.zapto.org", "http://babywombat.zapto.org:10260")
-                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowedOrigins("http://localhost:8081", "http://babywombat.zapto.org", "http://babywombat.zapto.org:10260")
+                .allowedMethods("*")
                 .allowedHeaders("*");
     }
+
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**")
+//                .allowedOrigins(getProperty("local1"), getProperty("local2"), getProperty("server"), "http://babywombat.zapto.org", "http://babywombat.zapto.org:10260")
+//                .allowedMethods("GET", "POST", "PUT", "DELETE")
+//                .allowedHeaders("*");
+//
+//        registry.addMapping("/api/**")
+//                .allowedOrigins(getProperty("server"), "http://babywombat.zapto.org", "http://babywombat.zapto.org:10260")
+//                .allowedMethods("GET", "POST", "PUT", "DELETE")
+//                .allowedHeaders("*");
+//    }
 }
