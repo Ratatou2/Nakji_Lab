@@ -24,13 +24,13 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins(getProperty("local1"), getProperty("local1")) // 프론트엔드 주소
+                .allowedOrigins(getProperty("local1"), getProperty("local2"), getProperty("server"))
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*");
 
         registry.addMapping("/api/**")
-                .allowedOrigins(getProperty("server")) // 프론트엔드 URL 추가
-                .allowedMethods("GET", "POST", "PUT", "DELETE") // 허용할 HTTP 메소드
+                .allowedOrigins(getProperty("server"))
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*")
                 .allowCredentials(true);
     }
