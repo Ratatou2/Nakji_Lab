@@ -8,7 +8,6 @@ public class UpdateSongInfoResponse extends CommonResponse {
         super(false, "");
     }
 
-
     // 파라미터 받는 생성자
     public UpdateSongInfoResponse(boolean isSuccess, String message) {
         super(isSuccess, message);

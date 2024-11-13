@@ -1,18 +1,16 @@
 package com.nakji.lab.controller;
 
-import com.nakji.lab.config.WebConfig;
 import com.nakji.lab.dto.request.YoutubeDownloadRequest;
+import com.nakji.lab.dto.response.DownloadAndUpdateMp3FileResponse;
 import com.nakji.lab.dto.response.UpdateSongInfoResponse;
 import com.nakji.lab.dto.response.YoutubeDownloadResponse;
 import com.nakji.lab.service.YoutubeService;
 
 import com.nakji.lab.utill.YoutubeUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 
 @RestController
@@ -23,18 +21,23 @@ public class YoutubeController {
     private final String DEFAULT_LOG_SYSTEM_FAIL = "[SYSTEM][FAIL] ";
 
     private final YoutubeService youtubeService;
-    private final YoutubeUtil youtubeUtil;
 
     @PostMapping("/download")
-    public ResponseEntity<String> downloadAndUpdateMp3File(@RequestBody YoutubeDownloadRequest youtubeDownloadRequest) {
+    public ResponseEntity<DownloadAndUpdateMp3FileResponse> downloadAndUpdateMp3File(@RequestBody YoutubeDownloadRequest youtubeDownloadRequest) {
         try {
+            DownloadAndUpdateMp3FileResponse response = new DownloadAndUpdateMp3FileResponse();
+
+            String url = youtubeDownloadRequest.getUrl();
+            String artist = youtubeDownloadRequest.getArtist();
+            String songTitle = youtubeDownloadRequest.getSongTitle();
+
             System.out.println("[SYSTEM][downloadAndUpdateMp3File][USER_INPUT] "
-                    + youtubeDownloadRequest.getUrl() + " / "
-                    + youtubeDownloadRequest.getArtist() + " / "
-                    + youtubeDownloadRequest.getSongTitle());
+                    + url + " / "
+                    + artist + " / "
+                    + songTitle);
 
             // url의 유효성 검사
-            if (youtubeUtil.isValidUrl(youtubeDownloadRequest.getUrl())) {
+            if (YoutubeUtil.isValidUrl(youtubeDownloadRequest.getUrl())) {
                 throw new IllegalArgumentException("Wrong URL.");
             }
 
@@ -53,7 +56,11 @@ public class YoutubeController {
 
             if (!youtubeDownloadResponse.isSuccess()) {
                 System.out.println(DEFAULT_LOG_CONTROLLER_NAME + "[downloadAndUpdateMp3File][Download Script][FAIL] " + youtubeDownloadResponse.getMessage());
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(DEFAULT_LOG_SYSTEM_FAIL + youtubeDownloadResponse.getMessage());
+
+                response = new DownloadAndUpdateMp3FileResponse(false, DEFAULT_LOG_SYSTEM_FAIL + youtubeDownloadResponse.getMessage(), artist, songTitle);
+
+//                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(DEFAULT_LOG_SYSTEM_FAIL + youtubeDownloadResponse.getMessage());
+                return ResponseEntity.ok(response);
             }
 
             // 노래 Info 업데이트
@@ -61,13 +68,17 @@ public class YoutubeController {
 
             if (!updateSongInfoResponse.isSuccess()) {
                 System.out.println(DEFAULT_LOG_CONTROLLER_NAME + "[downloadAndUpdateMp3File][Update Script][FAIL]" + updateSongInfoResponse.getMessage());
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(DEFAULT_LOG_SYSTEM_FAIL + updateSongInfoResponse.getMessage());
+//                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(DEFAULT_LOG_SYSTEM_FAIL + updateSongInfoResponse.getMessage());
+                response = new DownloadAndUpdateMp3FileResponse(false, DEFAULT_LOG_SYSTEM_FAIL + updateSongInfoResponse.getMessage(), artist, songTitle);
+                return ResponseEntity.ok(response);
             }
 
-            return ResponseEntity.ok("[SUCCESS] Download and update completed successfully.");
+            response = new DownloadAndUpdateMp3FileResponse(true, "Success", artist, songTitle);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             System.err.println(DEFAULT_LOG_CONTROLLER_NAME + "[downloadAndUpdateMp3File][Exception] " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(DEFAULT_LOG_SYSTEM_FAIL + "[Exception]" + e.getMessage());
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(DEFAULT_LOG_SYSTEM_FAIL + "[Exception]" + e.getMessage());
+            return ResponseEntity.ok(new DownloadAndUpdateMp3FileResponse(false, DEFAULT_LOG_SYSTEM_FAIL + "[Exception]" + e.getMessage()));
         }
     }
 }
