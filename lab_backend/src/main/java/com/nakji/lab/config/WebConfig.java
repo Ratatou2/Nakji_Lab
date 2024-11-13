@@ -18,7 +18,9 @@ public class WebConfig implements WebMvcConfigurer {
         this.environment = environment;
     }
     public String getProperty(String key){
-        return environment.getProperty(key);
+        String temp = environment.getProperty(key);
+        System.out.println(temp);
+        return temp;
     }
 
     @Override

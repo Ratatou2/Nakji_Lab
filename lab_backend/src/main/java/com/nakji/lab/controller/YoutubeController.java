@@ -1,5 +1,6 @@
 package com.nakji.lab.controller;
 
+import com.nakji.lab.config.WebConfig;
 import com.nakji.lab.dto.request.YoutubeDownloadRequest;
 import com.nakji.lab.dto.response.UpdateSongInfoResponse;
 import com.nakji.lab.dto.response.YoutubeDownloadResponse;
@@ -24,9 +25,13 @@ public class YoutubeController {
     private final YoutubeService youtubeService;
     private final YoutubeUtil youtubeUtil;
 
+    private final WebConfig webConfig;
+
     @PostMapping("/download")
     public ResponseEntity<String> downloadAndUpdateMp3File(@RequestBody YoutubeDownloadRequest youtubeDownloadRequest) {
         try {
+            webConfig.getProperty("server");
+
             System.out.println("[SYSTEM][downloadAndUpdateMp3File][USER_INPUT] "
                     + youtubeDownloadRequest.getUrl() + " / "
                     + youtubeDownloadRequest.getArtist() + " / "
