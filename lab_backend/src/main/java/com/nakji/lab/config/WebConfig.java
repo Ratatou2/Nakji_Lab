@@ -1,6 +1,5 @@
 package com.nakji.lab.config;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -18,35 +17,15 @@ public class WebConfig implements WebMvcConfigurer {
         this.environment = environment;
     }
     public String getProperty(String key){
-        String temp = environment.getProperty(key);
-        System.out.println("현재 env  파일 읽어온 내용 : " + temp);
-        return temp;
+        return environment.getProperty(key);
     }
 
     // env로 CORS 매핑
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins(getProperty("local1"), getProperty("local2"), getProperty("server1"), getProperty("server2"))
-                .allowedMethods("*")
-                .allowedHeaders("*");
-
-
         registry.addMapping("/api/**")
                 .allowedOrigins(getProperty("local1"), getProperty("local2"), getProperty("server1"), getProperty("server2"))
                 .allowedMethods("*")
                 .allowedHeaders("*");
-
-
     }
-
-    // 하드 코딩으로 CORS 매핑
-//    @Override
-//    public void addCorsMappings(CorsRegistry registry) {
-//        registry.addMapping("/api/**")
-//                .allowedOrigins("http://localhost:8081", "http://babywombat.zapto.org", "http://babywombat.zapto.org:10260")
-//                .allowedMethods("*")
-//                .allowedHeaders("*");
-//    }
-
 }
