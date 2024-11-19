@@ -1,5 +1,8 @@
 <template>
   <div>
+    <button @click="showAlert">눌러</button>
+  </div>
+  <div>
     <div>
       <div>유튜브 링크: <input type="text" v-model="url" /></div>
       <div>가수: <input type="text" v-model="artist" /></div>
@@ -10,6 +13,8 @@
 </template>
 
 <script>
+import Toast from "../util/sweetalert2";
+
 export default {
   data() {
     return {
@@ -19,9 +24,15 @@ export default {
     };
   },
   methods: {
+    showAlert() {
+      Toast.fire({
+        icon: "info",
+        title: `TestTestTest`,
+      });
+    },
+
     async downloadYoutube() {
       try {
-        // 여기서 백엔드 URL을 프로시로 설정된 URL로 호출
         const response = await fetch(
           `${
             process.env.VUE_APP_BACKEND_URL || "http://localhost:8080"
@@ -44,7 +55,18 @@ export default {
         }
 
         const data = await response.json();
-        console.log(data); // 백엔드에서 보낸 응답 처리
+
+        if (data.success) {
+          Toast.fire({
+            icon: "success",
+            title: `[Success] \n ${data.artist} - ${data.songTitle}`,
+          });
+        } else {
+          Toast.fire({
+            icon: "error",
+            title: `[Fail] \n ${data.artist} - ${data.songTitle}`,
+          });
+        }
       } catch (error) {
         console.error(
           "There has been a problem with your fetch operation:",
