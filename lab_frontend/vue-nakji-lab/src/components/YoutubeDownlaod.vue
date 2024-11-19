@@ -1,9 +1,7 @@
 <template>
   <div>
-    <button @click="showAlert">눌러</button>
-  </div>
-  <div>
     <div>
+      <button @click="showAlert">눌러</button>
       <div>유튜브 링크: <input type="text" v-model="url" /></div>
       <div>가수: <input type="text" v-model="artist" /></div>
       <div>제목: <input type="text" v-model="songTitle" /></div>
@@ -34,9 +32,7 @@ export default {
     async downloadYoutube() {
       try {
         const response = await fetch(
-          `${
-            process.env.VUE_APP_BACKEND_URL || "http://localhost:8080"
-          }/api/youtube/download`,
+          `${process.env.VUE_APP_BACKEND_URL || "http://localhost:8080"}/api/youtube/download`,
           {
             method: "POST",
             headers: {
@@ -68,10 +64,7 @@ export default {
           });
         }
       } catch (error) {
-        console.error(
-          "There has been a problem with your fetch operation:",
-          error
-        );
+        console.error("There has been a problem with your fetch operation:", error);
       }
     },
   },
