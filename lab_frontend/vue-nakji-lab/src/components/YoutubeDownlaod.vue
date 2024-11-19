@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import Toast from "../util/sweetalert2";
+import Toast from "@/util/sweetalert2";
 
 export default {
   data() {
