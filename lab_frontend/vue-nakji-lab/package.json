@@ -13,44 +13,8 @@
     "vue": "^3.5.12"
   },
   "devDependencies": {
-<<<<<<< HEAD
-    "@babel/core": "^7.12.16",
-    "@babel/eslint-parser": "^7.12.16",
-    "@vue/cli-plugin-babel": "~5.0.0",
-    "@vue/cli-plugin-eslint": "~5.0.0",
-    "@vue/cli-service": "~5.0.0",
-    "eslint": "^7.32.0",
-    "eslint-plugin-vue": "^8.0.3",
-    "webpack": "^5.96.1",
-    "webpack-dev-server": "^4.15.2"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/vue3-essential",
-      "eslint:recommended"
-    ],
-    "parserOptions": {
-      "parser": "@babel/eslint-parser"
-    },
-    "rules": {}
-  },
-  "prettier": {
-    "printWidth": 120
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead",
-    "not ie 11"
-  ]
-=======
     "@vitejs/plugin-vue": "^5.1.4",
     "vite": "^5.4.10",
     "vite-plugin-vue-devtools": "^7.5.4"
   }
->>>>>>> origin/frontend
 }

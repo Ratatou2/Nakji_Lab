@@ -1,0 +1,26 @@
+/* SweetAlert2 Toast Styling */
+.colored-toast.swal2-icon-success {
+  background-color: #80dd49 !important;
+}
+
+.colored-toast.swal2-icon-error {
+  background-color: #e95656 !important;
+}
+
+.colored-toast.swal2-icon-warning {
+  background-color: #ff9d47 !important;
+}
+
+.colored-toast.swal2-icon-info {
+  background-color: #3f99ff !important;
+}
+
+.colored-toast.swal2-icon-question {
+  background-color: #87adbd !important;
+}
+
+.colored-toast .swal2-title,
+.colored-toast .swal2-close,
+.colored-toast .swal2-html-container {
+  color: white;
+}

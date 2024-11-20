@@ -19,44 +19,6 @@ const url = ref("https://youtu.be/8Ebqe2Dbzls");
 const artist = ref("ROSE & Bruno Mars");
 const songTitle = ref("APT");
 
-<<<<<<< HEAD
-    async downloadYoutube() {
-      try {
-        const response = await fetch(
-          `${process.env.VUE_APP_BACKEND_URL || "http://localhost:8080"}/api/youtube/download`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              artist: this.artist,
-              songTitle: this.songTitle,
-              url: this.url,
-            }),
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-
-        const data = await response.json();
-
-        if (data.success) {
-          Toast.fire({
-            icon: "success",
-            title: `[Success] \n ${data.artist} - ${data.songTitle}`,
-          });
-        } else {
-          Toast.fire({
-            icon: "error",
-            title: `[Fail] \n ${data.artist} - ${data.songTitle}`,
-          });
-        }
-      } catch (error) {
-        console.error("There has been a problem with your fetch operation:", error);
-=======
 // 알림 함수
 const showAlert = () => {
   Toast.fire({
@@ -80,7 +42,6 @@ const downloadYoutube = async () => {
           songTitle: songTitle.value,
           url: url.value,
         }),
->>>>>>> origin/frontend
       }
     );
 
