@@ -1,4 +1,5 @@
 import Swal from "sweetalert2";
+import "@/assets/css/sweetalert2.css";
 
 const Toast = Swal.mixin({
   toast: true,
