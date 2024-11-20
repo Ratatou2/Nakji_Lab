@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 // import Swal from "sweetalert2";
+=======
+import Swal from "sweetalert2";
+import "@/assets/css/sweetalert2.css";
+>>>>>>> origin/frontend
 
 // const Toast = Swal.mixin({
 //   toast: true,
