@@ -1,7 +1,6 @@
 <template>
   <div>
     <div>
-      <button @click="showAlert">눌러</button>
       <div>유튜브 링크: <input type="text" v-model="url" /></div>
       <div>가수: <input type="text" v-model="artist" /></div>
       <div>제목: <input type="text" v-model="songTitle" /></div>
@@ -18,14 +17,6 @@ import Toast from "@/util/sweetalert2";
 const url = ref("https://youtu.be/8Ebqe2Dbzls");
 const artist = ref("ROSE & Bruno Mars");
 const songTitle = ref("APT");
-
-// 알림 함수
-const showAlert = () => {
-  Toast.fire({
-    icon: "info",
-    title: `TestTestTest`,
-  });
-};
 
 // 유튜브 다운로드 함수
 const downloadYoutube = async () => {
