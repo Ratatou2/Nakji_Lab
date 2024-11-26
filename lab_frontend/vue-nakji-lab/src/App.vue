@@ -1,14 +1,41 @@
 <script setup>
 import HelloWorld from "./components/HelloWorld.vue";
 import TheWelcome from "./components/TheWelcome.vue";
-import YoutubeDownlaod from "./components/YoutubeDownlaod.vue";
 import Toast from "@/util/sweetalert2";
 
-// 함수 정의
-const showAlert = () => {
+// 알림 함수
+const successAlert = () => {
+  Toast.fire({
+    icon: "success",
+    title: `success`,
+  });
+};
+
+const errorAlert = () => {
+  Toast.fire({
+    icon: "error",
+    title: `error`,
+  });
+};
+
+const warningAlert = () => {
+  Toast.fire({
+    icon: "warning",
+    title: `warning`,
+  });
+};
+
+const infoAlert = () => {
   Toast.fire({
     icon: "info",
-    title: `TestTestTest`,
+    title: `info`,
+  });
+};
+
+const questionAlert = () => {
+  Toast.fire({
+    icon: "question",
+    title: `question`,
   });
 };
 </script>
@@ -18,15 +45,18 @@ const showAlert = () => {
     <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
 
     <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+      <HelloWorld msg="Nakji World!!" />
     </div>
   </header>
 
   <main>
     <TheWelcome />
+    <button @click="successAlert">success</button>
+    <button @click="errorAlert">error</button>
+    <button @click="warningAlert">warning</button>
+    <button @click="infoAlert">info</button>
+    <button @click="questionAlert">question</button>
   </main>
-  <button @click="showAlert">눌러</button>
-  <YoutubeDownlaod></YoutubeDownlaod>
 </template>
 
 <style scoped>
