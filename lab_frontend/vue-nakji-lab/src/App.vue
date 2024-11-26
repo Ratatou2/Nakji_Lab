@@ -57,7 +57,6 @@ const questionAlert = () => {
     <button @click="infoAlert">info</button>
     <button @click="questionAlert">question</button>
   </main>
-  <YoutubeDownlaod></YoutubeDownlaod>
 </template>
 
 <style scoped>
