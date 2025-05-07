@@ -7,149 +7,141 @@ import os
 import glob
 import sys
 import argparse
-# import logging
-
-# # 로그 설정 (UTF-8 없으면 한글 깨짐)
-# log_dir = os.path.join('../logs')
-# if not os.path.exists(log_dir):
-#     os.makedirs(log_dir)
-#
-# logging.basicConfig(
-#     filename=os.path.join(log_dir, 'Update_mp3_file.log'),
-#     level=logging.INFO,
-#     encoding='utf-8'  # UTF-8 인코딩 설정
-# )
-
-global_final_artist_name = ""
-global_final_song_title = ""
+import time
 
 # 콘솔 출력 인코딩 설정 (UTF-8)
 if sys.stdout.encoding != 'UTF-8':
     import io
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
+global_final_artist_name = ""
+global_final_song_title = ""
+
+# 안전한 GET 요청
+def safe_get(url, headers=None, retries=1, timeout=20):
+    try:
+        response = requests.get(url, headers=headers, timeout=timeout)
+        if response.status_code == 200:
+            return response
+        else:
+            print(f"[HTTP {response.status_code}] 실패: {url}")
+    except requests.RequestException as e:
+        print(f"[RequestError] {e} ({url})")
+    return None
+
 def edit_mp3_file(query, file_link):
-#     logging.info(f'[SYSTEM] Starting Edit mp3 file')
-    # 벅스 검색 URL
-    url = f"https://music.bugs.co.kr/search/integrated?q={query}"
+    print(f"[Start] {query}")
+    base_url = f"https://music.bugs.co.kr/search/integrated?q={query}"
+    response = safe_get(base_url)
+    if response is None:
+        print("[Skip] 검색 페이지 요청 실패")
+        return False
 
-    # 검색 결과에서 첫 번째 노래 페이지로 이동
-    response = requests.get(url)
     soup = BeautifulSoup(response.content, "html.parser")
+    track_link = soup.find("a", {"class": "trackInfo"})
+    if not track_link:
+        print("[Skip] 곡 링크를 찾지 못함")
+        return False
 
-    song_url = soup.find("a", {"class": "trackInfo"}).get('href')
-    song_response = requests.get(song_url)
+    song_url = track_link.get('href')
+    song_response = safe_get(song_url)
+    if song_response is None:
+        print("[Skip] 곡 상세 페이지 요청 실패")
+        return False
 
-    # 앨범 제목, 아티스트, 노래 제목 가져오기
     soup = BeautifulSoup(song_response.content, "html.parser")
 
-    artist = soup.select('#container > section.sectionPadding.summaryInfo.summaryTrack > div > div.basicInfo > table > tbody > tr:nth-child(1) > td > a')
-    song = soup.select('#container > header > div > h1')
-    album = soup.select('#container > section.sectionPadding.summaryInfo.summaryTrack > div > div.basicInfo > table > tbody > tr:nth-child(3) > td > a')
+    try:
+        artist = soup.select('#container section.summaryTrack .basicInfo table tbody tr:nth-child(1) td a')[0].text.strip()
+        song = soup.select('#container > header > div > h1')[0].text.strip()
+        album = soup.select('#container section.summaryTrack .basicInfo table tbody tr:nth-child(3) td a')[0].text.strip()
+    except Exception as e:
+        print("[Skip] 메타 정보 파싱 실패:", e)
+        return False
 
-    # 앨범 아트 이미지 가져오기
-    soup = BeautifulSoup(song_response.content, "html.parser")
-    img_url = soup.select_one('img').get('src').replace('200', '1000')  # 고해상도 앨범아트로 변경
+    img_tag = soup.select_one('img')
+    if not img_tag or not img_tag.get('src'):
+        print("[Skip] 앨범 아트 없음")
+        return False
 
-    img_response = requests.get(img_url)
+    img_url = img_tag.get('src').replace('200', '1000')
+    img_response = safe_get(img_url)
+    if img_response is None:
+        print("[Skip] 앨범 아트 다운로드 실패")
+        return False
 
-    # 검색된 이미지를 PIL Image 객체로 변환
     try:
         image = Image.open(BytesIO(img_response.content))
         mime_type = 'image/' + image.format.lower()
         image_data = img_response.content
-#         logging.info(f"[PIL Complete]")
-        print("[PIL Complete] 앨범 아트 이미지 변환 성공")
     except Exception as e:
-#         logging.error(f"[Error Occurred][앨범 아트 이미지 변환 실패][{e}]")
-        print("[Error Occurred] 앨범 아트 이미지 변환 실패: ", e)
+        print("[Skip] 앨범 아트 변환 실패:", e)
+        return False
 
-    # 가사 가져오기
-    lyrics_url = soup.find("div", {"class": "lyricsContainer"}).text
-    delete_part = lyrics_url.find('님이 등록해 주신 가사입니다.')
-    lyrics = lyrics_url[:delete_part]
-
-    # mp3 파일 경로
-    mp3_file = file_link
-
-    # mp3 파일 태그 수정
     try:
-        audio = ID3(mp3_file)
-        print("[Tag Edit Success] 앨범 아트 이미지 변환 성공")
-    except Exception as e:
+        audio = ID3(file_link)
+    except Exception:
         audio = ID3()
-        print('[Tag Edit Fail] mp3 파일 태그 수정 실패: ', e)
 
     try:
-        print('[Tags] ' + song[0].text.strip() + ' ' + artist[0].text.strip() + ' ' + album[0].text.strip())
+        audio["TIT2"] = TIT2(encoding=3, text=song)
+        audio["TPE1"] = TPE1(encoding=3, text=artist)
+        audio["TALB"] = TALB(encoding=3, text=album)
+        audio["APIC"] = APIC(encoding=3, mime=mime_type, type=3, desc=u'Cover', data=image_data)
+        lyrics_block = soup.find("div", {"class": "lyricsContainer"})
+        if lyrics_block:
+            raw = lyrics_block.text
+            cut = raw.find('님이 등록해 주신 가사입니다.')
+            lyrics = raw[:cut].strip() if cut > 0 else raw.strip()
+            audio["USLT"] = USLT(encoding=3, lang=u'kor', desc=u'', text=lyrics)
 
-        audio["TIT2"] = TIT2(encoding=3, text=song[0].text.strip())  # 제목
-        audio["TPE1"] = TPE1(encoding=3, text=artist[0].text.strip())  # 가수
-        audio["TALB"] = TALB(encoding=3, text=album[0].text.strip())  # 앨범
-        audio["APIC"] = APIC(encoding=3, mime=mime_type, type=3, desc=u'Cover', data=image_data)  # 앨범아트
-        audio["USLT"] = USLT(encoding=3, lang=u'kor', desc=u'', text=lyrics)  # 가사
-
-        audio.save(mp3_file)
-
+        audio.save(file_link)
         global global_final_artist_name, global_final_song_title
-        global_final_artist_name = artist[0].text.strip()
-        global_final_song_title = song[0].text.strip()
+        global_final_artist_name = artist
+        global_final_song_title = song
 
-#         logging.info(f'[Complete] {mp3_file} Complete!')
-        print('[Success][mp3 파일 저장 성공][' + mp3_file + ']')
+        print(f"[Success] 저장 완료: {file_link}")
+        return True
     except Exception as e:
-#         logging.error(f"[Error][mp3 파일 태그 수정 Fail][{e}]")
-        print("[Error][mp3 파일 저장 실패][" + mp3_file + '] : ', e)
-
+        print("[Error] mp3 저장 실패:", e)
+        return False
 
 def rename_mp3_file(file_path, artist, songTitle):
-    # 파일명 수정: {artist} - {songTitle} 형식으로 변경
     new_file_name = f"{artist.strip()} - {songTitle.strip()}.mp3"
     new_file_path = os.path.join(os.path.dirname(file_path), new_file_name)
 
-    # 파일이 이미 존재하는지 확인
     if os.path.exists(new_file_path):
-        print(f"[Renamed Fail] {os.path.basename(new_file_path)}가 이미 있습니다")  # 파일이 이미 존재하는 경우 출력
+        print(f"[Rename Fail] {os.path.basename(new_file_path)} 이미 존재")
     else:
         os.rename(file_path, new_file_path)
-        print(f"[Renamed Success] {os.path.basename(file_path)} -> {os.path.basename(new_file_path)}")
+        print(f"[Renamed] {os.path.basename(file_path)} -> {os.path.basename(new_file_path)}")
     return new_file_path
 
-
 if __name__ == "__main__":
-    # 커맨드라인 인자 받기
     parser = argparse.ArgumentParser(description='Update MP3 file tags.')
     parser.add_argument('--mp3path', required=True, help='Path to MP3 files')
     args = parser.parse_args()
-
     path = args.mp3path
 
-
     file_list = glob.glob(os.path.join(path, "*.mp3"))
-
     if not file_list:
-        print(f"[Error] 지정된 경로에 mp3 파일이 없습니다: {path}")
+        print(f"[Error] mp3 파일 없음: {path}")
     else:
         for file_path in file_list:
-            print(f"[Found] 파일 경로: {file_path}")
-
+            print(f"[파일 감지] {file_path}")
             file_name = os.path.basename(file_path)
             start = file_name.rfind('-')
             end = file_name.rfind('.mp3')
 
             if start == -1 or end == -1:
-                continue  # 올바른 형식이 아니면 건너뜀
+                print(f"[Skip] 잘못된 파일명 형식: {file_name}")
+                continue
 
             query = file_name[:end].replace('-', ' ')
+            print(f"[처리 중] {query}")
 
-            print(f'[Processing] {query}')
-            edit_mp3_file(query, file_path)
-
-            artist = file_name[:start]  # 아티스트 이름
-            song = file_name[start + 1:end]  # 노래 제목
-
-            # 파일명을 {artist} - {songTitle} 형식으로 변경
-            new_file_path = rename_mp3_file(file_path, global_final_artist_name, global_final_song_title)
-
-
-
+            success = edit_mp3_file(query, file_path)
+            if success:
+                rename_mp3_file(file_path, global_final_artist_name, global_final_song_title)
+            else:
+                print("[Skip] 메타데이터 업데이트 실패. 다음 파일로 넘어감.")
